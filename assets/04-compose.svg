@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 310" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+  <rect x="0.5" y="0.5" width="759" height="309" rx="10" fill="#0d1117" stroke="#30363d"/>
+  <path d="M0 10 a10 10 0 0 1 10 -10 h740 a10 10 0 0 1 10 10 v26 h-760 z" fill="#161b22"/>
+  <circle cx="22" cy="18" r="6" fill="#ff5f56"/>
+  <circle cx="42" cy="18" r="6" fill="#ffbd2e"/>
+  <circle cx="62" cy="18" r="6" fill="#27c93f"/>
+  <text x="380" y="22" fill="#8b949e" font-size="12" text-anchor="middle">04-compose</text>
+  <text font-size="13.5" xml:space="preserve">
+    <tspan x="22" y="66" fill="#7ee787">$ docker compose up -d</tspan>
+    <tspan x="22" y="88" fill="#8b949e"> Network 04-compose_default  </tspan><tspan fill="#27c93f">Created</tspan>
+    <tspan x="22" y="110" fill="#8b949e"> Container 04-compose-chat-api-1  </tspan><tspan fill="#27c93f">Started</tspan>
+    <tspan x="22" y="148" fill="#7ee787">$ curl -X POST localhost:8080/chat \</tspan>
+    <tspan x="22" y="170" fill="#7ee787">    -d '{"prompt":"Give me one tip for a good Dockerfile."}'</tspan>
+    <tspan x="22" y="208" fill="#8b949e">{</tspan>
+    <tspan x="22" y="230" fill="#8b949e">  "model": </tspan><tspan fill="#a5d6ff">"ai/gemma3"</tspan><tspan fill="#8b949e">,</tspan>
+    <tspan x="22" y="252" fill="#8b949e">  "reply": </tspan><tspan fill="#a5d6ff">"Minimize layers by combining commands to</tspan>
+    <tspan x="22" y="274" fill="#a5d6ff">           reduce image size and build time."</tspan>
+    <tspan x="22" y="296" fill="#8b949e">}</tspan>
+  </text>
+</svg>

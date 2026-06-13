@@ -5,6 +5,8 @@ Docker Model Runner, using the official [`OpenAI`](https://www.nuget.org/package
 
 Because DMR is OpenAI-compatible, the only DMR-specific detail is the base URL.
 
+![.NET streaming chat session](../assets/03-dotnet-chat.svg)
+
 ## Prerequisites
 
 - .NET 10 SDK

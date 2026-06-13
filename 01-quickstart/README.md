@@ -2,6 +2,8 @@
 
 Pull a model, run a one-shot prompt and discover the OpenAI-compatible API endpoint, all in a single script.
 
+![Quickstart script output](../assets/01-quickstart.svg)
+
 ## Prerequisites
 
 - Docker Desktop 4.40+ with Docker Model Runner enabled

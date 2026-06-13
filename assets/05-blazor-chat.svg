@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif">
+  <rect x="0.5" y="0.5" width="759" height="399" rx="10" fill="#0e1420" stroke="#1f2a3c"/>
+  <path d="M0 10 a10 10 0 0 1 10 -10 h740 a10 10 0 0 1 10 10 v34 h-760 z" fill="#202733"/>
+  <circle cx="22" cy="22" r="6" fill="#ff5f56"/>
+  <circle cx="42" cy="22" r="6" fill="#ffbd2e"/>
+  <circle cx="62" cy="22" r="6" fill="#27c93f"/>
+  <rect x="92" y="11" width="556" height="22" rx="11" fill="#131b28" stroke="#2b3445"/>
+  <text x="108" y="27" fill="#8a97a8" font-size="12">localhost:5000</text>
+
+  <g transform="translate(40,74) scale(1.3)">
+    <ellipse cx="0" cy="0" rx="8" ry="5.5" fill="#e8f3ff"/>
+    <path d="M6,-1 L12,-6 L11,3 Z" fill="#e8f3ff"/>
+    <path d="M-4,-6 L-6,-11 M-1,-6 L0,-11" stroke="#e8f3ff" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+    <circle cx="-4" cy="-1" r="1.1" fill="#202733"/>
+  </g>
+  <text x="66" y="70" fill="#e8edf5" font-size="15" font-weight="500">Model Runner Chat</text>
+  <text x="66" y="88" fill="#8a97a8" font-size="11.5">ai/gemma3 &#183; http://localhost:12434/engines/v1</text>
+  <rect x="648" y="57" width="72" height="30" rx="8" fill="none" stroke="#1f2a3c"/>
+  <text x="684" y="76" fill="#8a97a8" font-size="12" text-anchor="middle">Clear</text>
+  <line x1="0" y1="104" x2="760" y2="104" stroke="#1f2a3c"/>
+
+  <rect x="312" y="123" width="360" height="56" rx="12" fill="#4d8bff"/>
+  <text x="332" y="148" fill="#ffffff" font-size="13.5">What is Docker Model Runner? Answer in</text>
+  <text x="332" y="168" fill="#ffffff" font-size="13.5">one short sentence.</text>
+  <circle cx="700" cy="140" r="17" fill="#1a2536"/>
+  <g transform="translate(700,140)">
+    <circle cx="0" cy="-4" r="4" fill="#d7deea"/>
+    <path d="M-7,8 a7,6 0 0 1 14,0 Z" fill="#d7deea"/>
+  </g>
+
+  <circle cx="42" cy="222" r="17" fill="#1a2536"/>
+  <g transform="translate(42,222) scale(1.05)">
+    <ellipse cx="0" cy="0" rx="8" ry="5.5" fill="#e8f3ff"/>
+    <path d="M6,-1 L12,-6 L11,3 Z" fill="#e8f3ff"/>
+    <path d="M-4,-6 L-6,-11 M-1,-6 L0,-11" stroke="#e8f3ff" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+    <circle cx="-4" cy="-1" r="1.1" fill="#1a2536"/>
+  </g>
+  <rect x="64" y="200" width="496" height="104" rx="12" fill="#18222f"/>
+  <text x="84" y="224" fill="#e8edf5" font-size="13.5">Docker Model Runner is a tool that allows you to run</text>
+  <text x="84" y="246" fill="#e8edf5" font-size="13.5">large language models locally within Docker</text>
+  <text x="84" y="268" fill="#e8edf5" font-size="13.5">containers, streamlining deployment and resource</text>
+  <text x="84" y="290" fill="#e8edf5" font-size="13.5">management.</text>
+
+  <line x1="0" y1="326" x2="760" y2="326" stroke="#1f2a3c"/>
+  <rect x="24" y="344" width="596" height="40" rx="12" fill="#131b28" stroke="#1f2a3c"/>
+  <text x="40" y="369" fill="#8a97a8" font-size="13.5">Type a message and press Enter</text>
+  <rect x="632" y="344" width="104" height="40" rx="12" fill="#4d8bff"/>
+  <text x="684" y="369" fill="#ffffff" font-size="13.5" font-weight="500" text-anchor="middle">Send</text>
+</svg>

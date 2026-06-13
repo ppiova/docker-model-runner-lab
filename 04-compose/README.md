@@ -2,6 +2,8 @@
 
 Provision the model and a small app together with a single `docker compose up`.
 
+![docker compose up and a POST /chat response](../assets/04-compose.svg)
+
 The [`compose.yaml`](compose.yaml) uses the top-level `models` element so Compose makes
 `ai/gemma3` available through Docker Model Runner, and binds it to the `chat-api` service
 using the long syntax. Compose injects two environment variables into the container:
