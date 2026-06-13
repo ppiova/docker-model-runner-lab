@@ -153,6 +153,6 @@ Check what is loaded with <code>docker model ps</code>.
 
 <div align="center">
 
-Made by [Pablo Piovano](https://www.linkedin.com/in/ppiova/), Docker Captain.
+**[Pablo Piovano](https://www.linkedin.com/in/ppiova/)** &nbsp;|&nbsp; [Docker Captain](https://www.docker.com/captains/) &nbsp;&middot;&nbsp; [Microsoft MVP](https://mvp.microsoft.com/en-us/PublicProfile/5004753)
 
 </div>
