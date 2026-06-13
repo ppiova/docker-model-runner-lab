@@ -1,0 +1,9 @@
+# Normalize line endings.
+* text=auto
+
+# Shell scripts must use LF so they run inside Linux containers.
+*.sh text eol=lf
+Dockerfile text eol=lf
+
+# PowerShell scripts use CRLF on Windows.
+*.ps1 text eol=crlf
