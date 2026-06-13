@@ -6,10 +6,13 @@ The [`compose.yaml`](compose.yaml) uses the top-level `models` element so Compos
 `ai/gemma3` available through Docker Model Runner, and binds it to the `chat-api` service
 using the long syntax. Compose injects two environment variables into the container:
 
-| Variable          | Injected value (example)                          |
-| ----------------- | ------------------------------------------------- |
-| `OPENAI_BASE_URL` | `http://model-runner.docker.internal/engines/v1/` |
-| `MODEL`           | `ai/gemma3`                                        |
+| Variable          | Injected value (example)                  |
+| ----------------- | ----------------------------------------- |
+| `OPENAI_BASE_URL` | `http://model-runner.docker.internal/v1`  |
+| `MODEL`           | `ai/gemma3`                               |
+
+The app trims any trailing slash and uses this value as the OpenAI base URL, so it works
+whether the runner exposes the API at `/v1` or `/engines/v1`.
 
 The app ([app/](app)) is a .NET 10 minimal API with one endpoint, `POST /chat`, that forwards
 a prompt to the model and returns the reply. It reuses the same OpenAI SDK pattern as
