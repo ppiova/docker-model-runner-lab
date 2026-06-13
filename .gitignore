@@ -22,3 +22,5 @@ Thumbs.db
 # Environment files
 .env
 *.local
+
+# Local tooling
