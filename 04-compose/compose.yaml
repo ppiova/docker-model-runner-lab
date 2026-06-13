@@ -1,0 +1,18 @@
+# Docker Compose provisions the model and the app together.
+#
+# The top-level `models` element tells Compose to make the model available through
+# Docker Model Runner. The service-level `models` binding (long syntax) injects the
+# endpoint URL and model name into the container as environment variables.
+services:
+  chat-api:
+    build: ./app
+    ports:
+      - "8080:8080"
+    models:
+      gemma:
+        endpoint_var: OPENAI_BASE_URL
+        model_var: MODEL
+
+models:
+  gemma:
+    model: ai/gemma3
