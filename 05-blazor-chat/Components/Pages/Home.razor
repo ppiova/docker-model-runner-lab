@@ -1,0 +1,148 @@
+@page "/"
+@rendermode InteractiveServer
+@inject ChatClient Chat
+@inject ModelInfo Info
+@inject IJSRuntime JS
+@using System.ClientModel
+@using OpenAI.Chat
+
+<PageTitle>Docker Model Runner Chat</PageTitle>
+
+<div class="chat">
+    <header class="chat-header">
+        <div class="brand">
+            <span class="whale">🐳</span>
+            <div>
+                <h1>Model Runner Chat</h1>
+                <p class="sub">@Info.Model <span class="dot">·</span> @Info.Endpoint</p>
+            </div>
+        </div>
+        <button class="reset" @onclick="Reset" disabled="@busy" title="Clear the conversation">Clear</button>
+    </header>
+
+    <div class="messages" id="messages">
+        @if (bubbles.Count == 0)
+        {
+            <div class="empty">
+                <span class="whale-lg">🐳</span>
+                <p>Ask anything. The model runs locally through Docker Model Runner.</p>
+            </div>
+        }
+        @foreach (var bubble in bubbles)
+        {
+            <div class="row @bubble.Role">
+                <div class="avatar">@(bubble.Role == "user" ? "🧑" : "🐳")</div>
+                <div class="bubble">
+                    @if (bubble.Text.Length == 0 && busy)
+                    {
+                        <span class="typing"><span></span><span></span><span></span></span>
+                    }
+                    else
+                    {
+                        @bubble.Text
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    <footer class="composer">
+        <textarea @bind="input" @bind:event="oninput" @onkeydown="OnKeyDown"
+                  placeholder="Type a message and press Enter" rows="1" disabled="@busy"></textarea>
+        <button class="send" @onclick="Send" disabled="@(busy || string.IsNullOrWhiteSpace(input))">
+            Send
+        </button>
+    </footer>
+</div>
+
+@code {
+    // History sent to the model, kept across turns so it has context.
+    private readonly List<ChatMessage> history = new()
+    {
+        new SystemChatMessage("You are a helpful assistant running locally via Docker Model Runner. Keep answers concise.")
+    };
+
+    // What the UI renders.
+    private readonly List<Bubble> bubbles = new();
+    private string input = string.Empty;
+    private bool busy;
+
+    private sealed class Bubble
+    {
+        public required string Role { get; init; }
+        public string Text { get; set; } = string.Empty;
+    }
+
+    private async Task OnKeyDown(KeyboardEventArgs e)
+    {
+        // Enter sends, Shift+Enter inserts a newline.
+        if (e.Key == "Enter" && !e.ShiftKey)
+        {
+            await Send();
+        }
+    }
+
+    private async Task Send()
+    {
+        string prompt = input.Trim();
+        if (busy || prompt.Length == 0)
+        {
+            return;
+        }
+
+        busy = true;
+        input = string.Empty;
+
+        bubbles.Add(new Bubble { Role = "user", Text = prompt });
+        history.Add(new UserChatMessage(prompt));
+
+        var answer = new Bubble { Role = "assistant", Text = string.Empty };
+        bubbles.Add(answer);
+        await ScrollToBottom();
+
+        try
+        {
+            await foreach (StreamingChatCompletionUpdate update in Chat.CompleteChatStreamingAsync(history))
+            {
+                foreach (ChatMessageContentPart part in update.ContentUpdate)
+                {
+                    answer.Text += part.Text;
+                    StateHasChanged();
+                }
+            }
+
+            history.Add(new AssistantChatMessage(answer.Text));
+        }
+        catch (Exception ex) when (ex is ClientResultException or HttpRequestException)
+        {
+            answer.Text = $"Could not reach the model at {Info.Endpoint}. Is Docker Model Runner enabled? ({ex.Message})";
+            // Drop the failed turn so the history stays consistent.
+            history.RemoveAt(history.Count - 1);
+        }
+        finally
+        {
+            busy = false;
+            StateHasChanged();
+            await ScrollToBottom();
+        }
+    }
+
+    private void Reset()
+    {
+        bubbles.Clear();
+        history.RemoveRange(1, history.Count - 1); // keep the system message
+        input = string.Empty;
+    }
+
+    private async Task ScrollToBottom()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("scrollChatToBottom");
+        }
+        catch (JSException)
+        {
+            // Ignore: the script is not available during prerender.
+        }
+    }
+}
