@@ -1,0 +1,18 @@
+# Docker Compose runs the Blazor chat UI and provisions the model together.
+#
+# The top-level `models` element makes the model available through Docker Model Runner,
+# and the service-level binding (long syntax) injects the endpoint URL and model name into
+# the container as environment variables. Open http://localhost:8080 after `docker compose up`.
+services:
+  web:
+    build: .
+    ports:
+      - "8080:8080"
+    models:
+      gemma:
+        endpoint_var: OPENAI_BASE_URL
+        model_var: MODEL
+
+models:
+  gemma:
+    model: ai/gemma3

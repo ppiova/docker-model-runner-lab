@@ -1,0 +1,67 @@
+:root {
+    --accent: #1d63ed;
+    --surface: #ffffff;
+    --border: #e3e8ef;
+    --text: #1a2233;
+    --muted: #6b7686;
+    --avatar-bg: #eef2f7;
+    --bubble-ai: #f1f4f9;
+    --input-bg: #f7f9fc;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --accent: #4d8bff;
+        --surface: #0e1420;
+        --border: #1f2a3c;
+        --text: #e8edf5;
+        --muted: #8a97a8;
+        --avatar-bg: #1a2536;
+        --bubble-ai: #18222f;
+        --input-bg: #131b28;
+    }
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--surface);
+    color: var(--text);
+}
+
+#blazor-error-ui {
+    color-scheme: light only;
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }
+
+.blazor-error-boundary {
+    background: #b32121;
+    padding: 1rem;
+    color: white;
+}
+
+    .blazor-error-boundary::after {
+        content: "An error has occurred."
+    }
