@@ -52,13 +52,25 @@ while (true)
     Console.Write("ai>  ");
     var reply = new System.Text.StringBuilder();
 
-    await foreach (StreamingChatCompletionUpdate update in chat.CompleteChatStreamingAsync(history))
+    try
     {
-        foreach (ChatMessageContentPart part in update.ContentUpdate)
+        await foreach (StreamingChatCompletionUpdate update in chat.CompleteChatStreamingAsync(history))
         {
-            Console.Write(part.Text);
-            reply.Append(part.Text);
+            foreach (ChatMessageContentPart part in update.ContentUpdate)
+            {
+                Console.Write(part.Text);
+                reply.Append(part.Text);
+            }
         }
+    }
+    catch (Exception ex) when (ex is ClientResultException or HttpRequestException)
+    {
+        Console.WriteLine();
+        Console.WriteLine($"error> Could not reach the model at {baseUrl}: {ex.Message}");
+        Console.WriteLine("error> Is Docker Model Runner enabled? Check with: docker model status");
+        // Drop the failed turn so the history stays consistent.
+        history.RemoveAt(history.Count - 1);
+        continue;
     }
 
     Console.WriteLine();
