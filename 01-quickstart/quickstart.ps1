@@ -21,8 +21,8 @@ if ($LASTEXITCODE -ne 0) {
 docker model status
 
 Write-Host "==> 2/5 Pulling model '$Model' (skipped if already present)"
-$existing = docker model list | Select-String -SimpleMatch $Model
-if ($existing) {
+docker model inspect $Model *> $null
+if ($LASTEXITCODE -eq 0) {
     Write-Host "    '$Model' is already available locally, skipping pull."
 } else {
     docker model pull $Model

@@ -20,7 +20,7 @@ fi
 docker model status
 
 echo "==> 2/5 Pulling model '${MODEL}' (skipped if already present)"
-if docker model list | grep -q "${MODEL}"; then
+if docker model inspect "${MODEL}" >/dev/null 2>&1; then
   echo "    '${MODEL}' is already available locally, skipping pull."
 else
   docker model pull "${MODEL}"
