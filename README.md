@@ -50,7 +50,7 @@ curl http://localhost:12434/engines/v1/models
 
 ## The lab
 
-Four hands-on modules, from zero to a Compose-managed AI app. Each one is self-contained.
+Five hands-on modules, from zero to a Blazor web chat backed by a local model. Each one is self-contained.
 
 | Module | What you build | Time |
 | ------ | -------------- | ---- |
@@ -58,6 +58,7 @@ Four hands-on modules, from zero to a Compose-managed AI app. Each one is self-c
 | [02-openai-api](02-openai-api) | Raw API calls with curl and the VS Code REST Client, including streaming | 5 min |
 | [03-dotnet-chat](03-dotnet-chat) | A .NET 10 streaming chat console app using the official OpenAI SDK | 10 min |
 | [04-compose](04-compose) | Model + web API provisioned together with the Compose `models` element | 10 min |
+| [05-blazor-chat](05-blazor-chat) | A .NET 10 Blazor Server web UI that streams chat responses from the model | 10 min |
 
 All examples default to `ai/gemma3` and accept a `MODEL` environment variable to swap models without touching code.
 
