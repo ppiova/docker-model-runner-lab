@@ -6,7 +6,7 @@ The OpenAI SDK runs server-side (the same pattern as [03-dotnet-chat](../03-dotn
 [04-compose](../04-compose)), and the model streams its answer token by token to the browser over
 the Blazor SignalR connection. No CORS setup, no API key, no data leaving your machine.
 
-<!-- ![Blazor chat screenshot](../assets/blazor-chat.png) -->
+![Blazor chat UI](../assets/05-blazor-chat.svg)
 
 ## Features
 

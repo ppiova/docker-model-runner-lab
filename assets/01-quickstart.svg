@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 354" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+  <rect x="0.5" y="0.5" width="759" height="353" rx="10" fill="#0d1117" stroke="#30363d"/>
+  <path d="M0 10 a10 10 0 0 1 10 -10 h740 a10 10 0 0 1 10 10 v26 h-760 z" fill="#161b22"/>
+  <circle cx="22" cy="18" r="6" fill="#ff5f56"/>
+  <circle cx="42" cy="18" r="6" fill="#ffbd2e"/>
+  <circle cx="62" cy="18" r="6" fill="#27c93f"/>
+  <text x="380" y="22" fill="#8b949e" font-size="12" text-anchor="middle">01-quickstart</text>
+  <text font-size="13.5" xml:space="preserve">
+    <tspan x="22" y="66" fill="#7ee787">PS&gt; ./quickstart.ps1</tspan>
+    <tspan x="22" y="88" fill="#58a6ff">==&gt; 1/5 Checking that Docker Model Runner is enabled</tspan>
+    <tspan x="22" y="110" fill="#c9d1d9">Docker Model Runner is running</tspan>
+    <tspan x="22" y="132" fill="#58a6ff">==&gt; 2/5 Pulling model 'ai/gemma3' (skipped if already present)</tspan>
+    <tspan x="22" y="154" fill="#8b949e">    'ai/gemma3' is already available locally, skipping pull.</tspan>
+    <tspan x="22" y="176" fill="#58a6ff">==&gt; 3/5 Listing local models</tspan>
+    <tspan x="22" y="198" fill="#8b949e">MODEL NAME  PARAMETERS  QUANTIZATION   ARCHITECTURE  SIZE</tspan>
+    <tspan x="22" y="220" fill="#c9d1d9">gemma3      3.88 B      MOSTLY_Q4_K_M  gemma3        2.31 GiB</tspan>
+    <tspan x="22" y="242" fill="#58a6ff">==&gt; 4/5 Running a one-shot prompt against 'ai/gemma3'</tspan>
+    <tspan x="22" y="264" fill="#c9d1d9">Docker Model Runner lets you run and deploy machine learning</tspan>
+    <tspan x="22" y="286" fill="#c9d1d9">models locally with Docker.</tspan>
+    <tspan x="22" y="308" fill="#58a6ff">==&gt; 5/5 OpenAI-compatible API endpoint (from the host)</tspan>
+    <tspan x="22" y="330" fill="#a5d6ff">    http://localhost:12434/engines/v1</tspan>
+  </text>
+</svg>

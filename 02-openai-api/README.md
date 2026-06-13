@@ -7,6 +7,8 @@ Docker Model Runner exposes an OpenAI-compatible API, so any OpenAI client or pl
 
 No API key is required, but OpenAI client libraries usually expect a non-empty one, so pass any placeholder value.
 
+![curl examples output, non-streaming and streaming](../assets/02-openai-api.svg)
+
 ## curl
 
 ```bash
