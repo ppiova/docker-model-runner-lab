@@ -1,0 +1,33 @@
+# Docker Model Runner over the OpenAI-compatible API.
+# Open this file in VS Code with the "REST Client" extension (humao.rest-client)
+# and click "Send Request" above each request.
+
+@baseUrl = http://localhost:12434/engines/v1
+@model = ai/gemma3
+
+### List available models
+GET {{baseUrl}}/models
+
+### Chat completion (non-streaming)
+POST {{baseUrl}}/chat/completions
+Content-Type: application/json
+
+{
+  "model": "{{model}}",
+  "messages": [
+    { "role": "system", "content": "You are a concise assistant." },
+    { "role": "user", "content": "Explain Docker Model Runner in two sentences." }
+  ]
+}
+
+### Chat completion (streaming)
+POST {{baseUrl}}/chat/completions
+Content-Type: application/json
+
+{
+  "model": "{{model}}",
+  "stream": true,
+  "messages": [
+    { "role": "user", "content": "List three benefits of running models locally." }
+  ]
+}
