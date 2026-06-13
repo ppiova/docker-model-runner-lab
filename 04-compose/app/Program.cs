@@ -36,11 +36,21 @@ app.MapPost("/chat", async (ChatRequest request, ChatClient client) =>
         return Results.BadRequest(new { error = "Field 'prompt' is required." });
     }
 
-    ChatCompletion completion = await client.CompleteChatAsync(
-        new UserChatMessage(request.Prompt));
+    try
+    {
+        ChatCompletion completion = await client.CompleteChatAsync(
+            new UserChatMessage(request.Prompt));
 
-    string reply = completion.Content.Count > 0 ? completion.Content[0].Text : string.Empty;
-    return Results.Ok(new { model, reply });
+        string reply = completion.Content.Count > 0 ? completion.Content[0].Text : string.Empty;
+        return Results.Ok(new { model, reply });
+    }
+    catch (Exception ex) when (ex is ClientResultException or HttpRequestException)
+    {
+        return Results.Problem(
+            title: "Model request failed",
+            detail: $"{ex.Message} Check that the model endpoint '{baseUrl}' is reachable.",
+            statusCode: StatusCodes.Status502BadGateway);
+    }
 });
 
 app.Run();
