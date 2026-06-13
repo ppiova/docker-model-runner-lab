@@ -9,7 +9,7 @@
 [![.NET 10](https://img.shields.io/badge/.NET-10-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
 [![Docker Desktop 4.40+](https://img.shields.io/badge/Docker%20Desktop-4.40%2B-2496ED?logo=docker&logoColor=white)](https://www.docker.com/products/docker-desktop/)
 
-[![Docker Captain](https://img.shields.io/badge/Docker-Captain-2496ED?logo=docker&logoColor=white)](https://www.docker.com/captains/)
+[![Docker Captain](https://img.shields.io/badge/Docker-Captain-2496ED?logo=docker&logoColor=white)](https://www.docker.com/contributors/pablo-piovano/)
 [![Microsoft MVP](https://img.shields.io/badge/Microsoft-MVP-0078D4?logo=microsoft&logoColor=white)](https://mvp.microsoft.com/en-us/PublicProfile/5004753)
 
 <!-- ![Docker Model Runner architecture](assets/dmr-architecture.gif) -->
@@ -156,6 +156,6 @@ Check what is loaded with <code>docker model ps</code>.
 
 <div align="center">
 
-**[Pablo Piovano](https://www.linkedin.com/in/ppiova/)** &nbsp;|&nbsp; [Docker Captain](https://www.docker.com/captains/) &nbsp;&middot;&nbsp; [Microsoft MVP](https://mvp.microsoft.com/en-us/PublicProfile/5004753)
+**[Pablo Piovano](https://www.linkedin.com/in/ppiova/)** &nbsp;|&nbsp; [Docker Captain](https://www.docker.com/contributors/pablo-piovano/) &nbsp;&middot;&nbsp; [Microsoft MVP](https://mvp.microsoft.com/en-us/PublicProfile/5004753)
 
 </div>
