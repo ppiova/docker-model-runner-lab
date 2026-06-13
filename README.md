@@ -61,6 +61,8 @@ Four hands-on modules, from zero to a Compose-managed AI app. Each one is self-c
 
 All examples default to `ai/gemma3` and accept a `MODEL` environment variable to swap models without touching code.
 
+> Every module was tested end to end with .NET 10 and `ai/gemma3` on Docker Desktop, running on the llama.cpp backend.
+
 ## Endpoints
 
 | Where your code runs | Base URL |
