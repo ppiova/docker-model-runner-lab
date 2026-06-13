@@ -51,6 +51,22 @@ Example response:
 { "model": "ai/gemma3", "reply": "Use a small base image and a multi-stage build to keep the final image lean." }
 ```
 
+## Pre-built image
+
+[![ghcr.io](https://img.shields.io/badge/ghcr.io-compose--api-2496ED?logo=docker&logoColor=white)](https://github.com/ppiova/docker-model-runner-lab/pkgs/container/docker-model-runner-lab%2Fcompose-api)
+
+A ready-to-run image is published to GitHub Container Registry by the
+[publish workflow](../.github/workflows/publish.yml). Run it without cloning the repo:
+
+```bash
+docker run --rm -p 8080:8080 \
+  -e OPENAI_BASE_URL=http://model-runner.docker.internal/engines/v1 \
+  -e MODEL=ai/gemma3 \
+  ghcr.io/ppiova/docker-model-runner-lab/compose-api:latest
+```
+
+Docker Model Runner must be enabled so the container can reach `model-runner.docker.internal`.
+
 ## Stop
 
 ```bash

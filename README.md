@@ -64,6 +64,21 @@ All examples default to `ai/gemma3` and accept a `MODEL` environment variable to
 
 > Every module was tested end to end with .NET 10 and `ai/gemma3` on Docker Desktop, running on the llama.cpp backend.
 
+## Running in Docker
+
+The model and the app run as containers side by side. The model is provisioned by Docker Model
+Runner and the apps reach it at `model-runner.docker.internal`, all from a single `docker compose up`.
+
+![docker model status, list and compose ps showing the model and app running](assets/docker-runtime.svg)
+
+The web apps are also published as ready-to-run images on GitHub Container Registry, built by the
+[publish workflow](.github/workflows/publish.yml):
+
+| Image | Module | Pull |
+| ----- | ------ | ---- |
+| [![compose-api](https://img.shields.io/badge/ghcr.io-compose--api-2496ED?logo=docker&logoColor=white)](https://github.com/ppiova/docker-model-runner-lab/pkgs/container/docker-model-runner-lab%2Fcompose-api) | [04-compose](04-compose) | `docker pull ghcr.io/ppiova/docker-model-runner-lab/compose-api:latest` |
+| [![blazor-chat](https://img.shields.io/badge/ghcr.io-blazor--chat-2496ED?logo=docker&logoColor=white)](https://github.com/ppiova/docker-model-runner-lab/pkgs/container/docker-model-runner-lab%2Fblazor-chat) | [05-blazor-chat](05-blazor-chat) | `docker pull ghcr.io/ppiova/docker-model-runner-lab/blazor-chat:latest` |
+
 ## Endpoints
 
 | Where your code runs | Base URL |
