@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Build 03-dotnet-chat
+        run: dotnet build 03-dotnet-chat -c Release
+
+      - name: Build 04-compose app
+        run: dotnet build 04-compose/app -c Release
+
+      - name: Check shell scripts
+        run: |
+          bash -n 01-quickstart/quickstart.sh
+          bash -n 02-openai-api/curl-examples.sh
+
+      - name: Check PowerShell script
+        shell: pwsh
+        run: |
+          $tokens = $null
+          $errors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile("01-quickstart/quickstart.ps1", [ref]$tokens, [ref]$errors) | Out-Null
+          if ($errors.Count -gt 0) { $errors; exit 1 }
+
+      - name: Validate compose file
+        run: docker compose -f 04-compose/compose.yaml config
