@@ -43,6 +43,23 @@ docker compose up --build
 Compose injects `OPENAI_BASE_URL` and `MODEL` into the container, so the app talks to the model
 at `http://model-runner.docker.internal` with no extra configuration.
 
+## Pre-built image
+
+[![ghcr.io](https://img.shields.io/badge/ghcr.io-blazor--chat-2496ED?logo=docker&logoColor=white)](https://github.com/ppiova/docker-model-runner-lab/pkgs/container/docker-model-runner-lab%2Fblazor-chat)
+
+A ready-to-run image is published to GitHub Container Registry by the
+[publish workflow](../.github/workflows/publish.yml). Run it without cloning the repo:
+
+```bash
+docker run --rm -p 8080:8080 \
+  -e OPENAI_BASE_URL=http://model-runner.docker.internal/engines/v1 \
+  -e MODEL=ai/gemma3 \
+  ghcr.io/ppiova/docker-model-runner-lab/blazor-chat:latest
+```
+
+Then open `http://localhost:8080`. Docker Model Runner must be enabled so the container can reach
+`model-runner.docker.internal`.
+
 ## Stop
 
 ```bash
