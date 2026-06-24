@@ -21,8 +21,14 @@ if ($LASTEXITCODE -ne 0) {
 docker model status
 
 Write-Host "==> 2/5 Pulling model '$Model' (skipped if already present)"
+# Probe for the model without aborting: a missing model makes `docker model inspect`
+# write to stderr, which $ErrorActionPreference = "Stop" would turn into a terminating error.
+$prevEap = $ErrorActionPreference
+$ErrorActionPreference = "Continue"
 docker model inspect $Model *> $null
-if ($LASTEXITCODE -eq 0) {
+$modelExists = $LASTEXITCODE -eq 0
+$ErrorActionPreference = $prevEap
+if ($modelExists) {
     Write-Host "    '$Model' is already available locally, skipping pull."
 } else {
     docker model pull $Model
