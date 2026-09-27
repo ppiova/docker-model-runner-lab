@@ -15,6 +15,13 @@ the Blazor SignalR connection. No CORS setup, no API key, no data leaving your m
 - Model name and endpoint shown in the header (resolved from configuration).
 - Light and dark theme, following your system preference.
 - Friendly error message if the model endpoint is unreachable.
+- **Stop** cancels the active response and restores the message input for retry.
+
+Stopped responses keep their partial text on screen, marked as stopped. The canceled
+exchange is excluded from the context sent with the next message; earlier completed
+exchanges remain available. The server also cancels generation when the chat component
+is disposed. Closing a browser tab may retain the Blazor circuit temporarily, so use
+**Stop** to cancel immediately.
 
 ## Configuration
 

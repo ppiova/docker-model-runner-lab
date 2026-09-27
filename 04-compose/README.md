@@ -65,6 +65,10 @@ Example response:
 { "model": "ai/gemma3", "reply": "Use a small base image and a multi-stage build to keep the final image lean." }
 ```
 
+If the HTTP caller cancels or disconnects, the API passes request cancellation to the
+model SDK. Canceled requests are classified as HTTP 499 (the disconnected client may
+not receive a response); model connection failures still return HTTP 502.
+
 ## Pre-built image
 
 [![ghcr.io](https://img.shields.io/badge/ghcr.io-compose--api-2496ED?logo=docker&logoColor=white)](https://github.com/ppiova/docker-model-runner-lab/pkgs/container/docker-model-runner-lab%2Fcompose-api)

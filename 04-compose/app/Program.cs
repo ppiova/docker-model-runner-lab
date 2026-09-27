@@ -29,7 +29,7 @@ var app = builder.Build();
 app.MapGet("/", () => Results.Ok(new { status = "ok", model, endpoint = baseUrl }));
 
 // Forward a prompt to the model and return the reply.
-app.MapPost("/chat", async (ChatRequest request, ChatClient client) =>
+app.MapPost("/chat", async (ChatRequest request, ChatClient client, CancellationToken cancellationToken) =>
 {
     if (string.IsNullOrWhiteSpace(request.Prompt))
     {
@@ -39,13 +39,21 @@ app.MapPost("/chat", async (ChatRequest request, ChatClient client) =>
     try
     {
         ChatCompletion completion = await client.CompleteChatAsync(
-            new UserChatMessage(request.Prompt));
+            new ChatMessage[] { new UserChatMessage(request.Prompt) },
+            cancellationToken: cancellationToken);
 
         string reply = completion.Content.Count > 0 ? completion.Content[0].Text : string.Empty;
         return Results.Ok(new { model, reply });
     }
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+    {
+        // RequestAborted is bound to cancellationToken. The caller has disconnected;
+        // do not report its cancellation as an upstream failure.
+        return Results.StatusCode(499);
+    }
     catch (Exception ex) when (ex is ClientResultException or HttpRequestException)
     {
+        if (cancellationToken.IsCancellationRequested) { return Results.StatusCode(499); }
         return Results.Problem(
             title: "Model request failed",
             detail: $"{ex.Message} Check that the model endpoint '{baseUrl}' is reachable.",
@@ -57,3 +65,6 @@ app.Run();
 
 // Request body for POST /chat.
 record ChatRequest(string Prompt);
+
+// Expose the application entry point for in-memory integration tests.
+public partial class Program { }

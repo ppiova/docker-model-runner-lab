@@ -1,5 +1,6 @@
 @page "/"
 @rendermode InteractiveServer
+@implements IDisposable
 @inject ChatClient Chat
 @inject ModelInfo Info
 @inject IJSRuntime JS
@@ -49,9 +50,14 @@
     <footer class="composer">
         <textarea @bind="input" @bind:event="oninput" @onkeydown="OnKeyDown"
                   placeholder="Type a message and press Enter" rows="1" disabled="@busy"></textarea>
-        <button class="send" @onclick="Send" disabled="@(busy || string.IsNullOrWhiteSpace(input))">
-            Send
-        </button>
+        @if (busy)
+        {
+            <button class="send" @onclick="Stop" disabled="@(generation?.IsCancellationRequested == true)">Stop</button>
+        }
+        else
+        {
+            <button class="send" @onclick="Send" disabled="@string.IsNullOrWhiteSpace(input)">Send</button>
+        }
     </footer>
 </div>
 
@@ -66,6 +72,9 @@
     private readonly List<Bubble> bubbles = new();
     private string input = string.Empty;
     private bool busy;
+    private bool disposed;
+    private readonly CancellationTokenSource lifetime = new();
+    private CancellationTokenSource? generation;
 
     private sealed class Bubble
     {
@@ -85,25 +94,31 @@
     private async Task Send()
     {
         string prompt = input.Trim();
-        if (busy || prompt.Length == 0)
+        if (disposed || busy || prompt.Length == 0)
         {
             return;
         }
 
         busy = true;
         input = string.Empty;
+        using var turn = CancellationTokenSource.CreateLinkedTokenSource(lifetime.Token);
+        generation = turn;
+        int turnStart = history.Count;
+        bool completed = false;
 
         bubbles.Add(new Bubble { Role = "user", Text = prompt });
         history.Add(new UserChatMessage(prompt));
 
         var answer = new Bubble { Role = "assistant", Text = string.Empty };
         bubbles.Add(answer);
-        await ScrollToBottom();
-
         try
         {
-            await foreach (StreamingChatCompletionUpdate update in Chat.CompleteChatStreamingAsync(history))
+            await ScrollToBottom(turn.Token);
+            turn.Token.ThrowIfCancellationRequested();
+            await foreach (StreamingChatCompletionUpdate update in Chat.CompleteChatStreamingAsync(history,
+                cancellationToken: turn.Token))
             {
+                turn.Token.ThrowIfCancellationRequested();
                 foreach (ChatMessageContentPart part in update.ContentUpdate)
                 {
                     answer.Text += part.Text;
@@ -111,20 +126,43 @@
                 }
             }
 
+            turn.Token.ThrowIfCancellationRequested();
             history.Add(new AssistantChatMessage(answer.Text));
+            completed = true;
+        }
+        catch (OperationCanceledException) when (turn.IsCancellationRequested)
+        {
+            answer.Text += "\n\n[Response stopped. This turn will not be used as context.]";
+            input = prompt;
         }
         catch (Exception ex) when (ex is ClientResultException or HttpRequestException)
         {
-            answer.Text = $"Could not reach the model at {Info.Endpoint}. Is Docker Model Runner enabled? ({ex.Message})";
-            // Drop the failed turn so the history stays consistent.
-            history.RemoveAt(history.Count - 1);
+            answer.Text = turn.IsCancellationRequested
+                ? answer.Text + "\n\n[Response stopped. This turn will not be used as context.]"
+                : $"Could not reach the model at {Info.Endpoint}. Is Docker Model Runner enabled? ({ex.Message})";
+            input = prompt;
         }
         finally
         {
+            if (!completed) { history.RemoveRange(turnStart, history.Count - turnStart); }
+            generation = null;
             busy = false;
-            StateHasChanged();
-            await ScrollToBottom();
+            if (!disposed)
+            {
+                StateHasChanged();
+                await ScrollToBottom(lifetime.Token);
+            }
         }
+    }
+
+    private void Stop() => generation?.Cancel();
+
+    public void Dispose()
+    {
+        if (disposed) { return; }
+        disposed = true;
+        lifetime.Cancel();
+        lifetime.Dispose();
     }
 
     private void Reset()
@@ -134,15 +172,19 @@
         input = string.Empty;
     }
 
-    private async Task ScrollToBottom()
+    private async Task ScrollToBottom(CancellationToken cancellationToken)
     {
         try
         {
-            await JS.InvokeVoidAsync("scrollChatToBottom");
+            await JS.InvokeVoidAsync("scrollChatToBottom", cancellationToken);
         }
         catch (JSException)
         {
             // Ignore: the script is not available during prerender.
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            // Stopping or disposing the component can also cancel pending JS interop.
         }
     }
 }
