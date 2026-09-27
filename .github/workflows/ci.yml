@@ -15,14 +15,8 @@ jobs:
         with:
           dotnet-version: 10.0.x
 
-      - name: Build 03-dotnet-chat
-        run: dotnet build 03-dotnet-chat -c Release
-
-      - name: Build 04-compose app
-        run: dotnet build 04-compose/app -c Release
-
-      - name: Build 05-blazor-chat
-        run: dotnet build 05-blazor-chat -c Release
+      - name: Build and test .NET applications
+        run: dotnet test DockerModelRunnerLab.sln -c Release --logger "console;verbosity=normal"
 
       - name: Check shell scripts
         run: |

@@ -20,62 +20,18 @@ var credential = new ApiKeyCredential("docker-model-runner");
 var options = new OpenAIClientOptions { Endpoint = new Uri(baseUrl) };
 ChatClient chat = new OpenAIClient(credential, options).GetChatClient(model);
 
-Console.WriteLine($"Docker Model Runner chat. Model: {model}");
-Console.WriteLine($"Endpoint: {baseUrl}");
-Console.WriteLine("Type a message and press Enter. Type /exit to quit.");
-Console.WriteLine();
-
-// Conversation history kept across turns so the model has context.
-var history = new List<ChatMessage>
+using var shutdown = new CancellationTokenSource();
+ConsoleCancelEventHandler onCancel = (_, e) =>
 {
-    new SystemChatMessage("You are a helpful assistant running locally via Docker Model Runner.")
+    e.Cancel = true;
+    shutdown.Cancel();
 };
-
-while (true)
+Console.CancelKeyPress += onCancel;
+try
 {
-    Console.Write("you> ");
-    string? input = Console.ReadLine();
-
-    if (input is null || input.Trim() is "/exit" or "/quit")
-    {
-        break;
-    }
-
-    if (string.IsNullOrWhiteSpace(input))
-    {
-        continue;
-    }
-
-    history.Add(new UserChatMessage(input));
-
-    // Stream the response token by token and accumulate it for the history.
-    Console.Write("ai>  ");
-    var reply = new System.Text.StringBuilder();
-
-    try
-    {
-        await foreach (StreamingChatCompletionUpdate update in chat.CompleteChatStreamingAsync(history))
-        {
-            foreach (ChatMessageContentPart part in update.ContentUpdate)
-            {
-                Console.Write(part.Text);
-                reply.Append(part.Text);
-            }
-        }
-    }
-    catch (Exception ex) when (ex is ClientResultException or HttpRequestException)
-    {
-        Console.WriteLine();
-        Console.WriteLine($"error> Could not reach the model at {baseUrl}: {ex.Message}");
-        Console.WriteLine("error> Is Docker Model Runner enabled? Check with: docker model status");
-        // Drop the failed turn so the history stays consistent.
-        history.RemoveAt(history.Count - 1);
-        continue;
-    }
-
-    Console.WriteLine();
-    Console.WriteLine();
-    history.Add(new AssistantChatMessage(reply.ToString()));
+    await DmrChat.ConsoleChat.RunAsync(chat, Console.In, Console.Out, model, baseUrl, shutdown.Token);
 }
-
-Console.WriteLine("Bye.");
+finally
+{
+    Console.CancelKeyPress -= onCancel;
+}
