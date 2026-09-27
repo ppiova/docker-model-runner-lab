@@ -42,6 +42,10 @@ $env:MODEL = "ai/llama3.2"; ./quickstart.ps1
 
 Both scripts are idempotent, so re-running them will not re-download a model you already have.
 
+The PowerShell script supports Windows PowerShell 5.1 and PowerShell 7. If a required Docker
+command fails, it stops with a nonzero exit code and reports the failed command. A missing
+local model triggers a pull; it is not treated as a fatal error. See [regression checks](../tests).
+
 ## Next
 
 Head to [02-openai-api](../02-openai-api) to call the model over the OpenAI-compatible API.

@@ -38,6 +38,28 @@ jobs:
           if ($errors.Count -gt 0) { $errors; exit 1 }
 
       - name: Validate compose files
-        run: |
-          docker compose -f 04-compose/compose.yaml config
-          docker compose -f 05-blazor-chat/compose.yaml config
+        shell: pwsh
+        run: ./tests/compose.Tests.ps1
+
+  quickstart-tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            shell: pwsh
+          - os: windows-latest
+            shell: pwsh
+          - os: windows-latest
+            shell: powershell
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test PowerShell 7 quickstart behavior
+        if: matrix.shell == 'pwsh'
+        shell: pwsh
+        run: ./tests/quickstart.Tests.ps1
+      - name: Test Windows PowerShell 5.1 quickstart behavior
+        if: matrix.shell == 'powershell'
+        shell: powershell
+        run: ./tests/quickstart.Tests.ps1
