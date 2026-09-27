@@ -40,7 +40,7 @@ $env:MODEL = "ai/llama3.2"; dotnet run
 ```
 Docker Model Runner chat. Model: ai/gemma3
 Endpoint: http://localhost:12434/engines/v1
-Type a message and press Enter. Type /exit to quit.
+Type a message and press Enter. Type /exit to quit. Ctrl+C cancels and exits.
 
 you> What is Docker Model Runner in one sentence?
 ai>  Docker Model Runner lets you pull and run LLMs locally through Docker with an OpenAI-compatible API.
@@ -51,6 +51,10 @@ Bye.
 
 The response streams in token by token, and the conversation history is kept across turns so
 the model has context.
+
+Press **Ctrl+C** to cancel an active model request and exit cleanly. It also exits while
+waiting for keyboard input. A canceled or failed exchange is not added to the conversation
+history; partial output already printed remains visible in the terminal.
 
 ## Next
 
