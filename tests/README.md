@@ -1,5 +1,24 @@
 # Regression checks
 
+## .NET chat tests
+
+With the .NET 10 SDK, run from the repository root:
+
+```bash
+dotnet test DockerModelRunnerLab.sln -c Release
+```
+
+This builds all three applications and runs xUnit tests with an in-memory API host and
+bUnit for Blazor. The real OpenAI SDK uses a fake HTTP transport and controlled response
+streams; tests wait for explicit request/read signals before canceling. No Docker daemon,
+network model endpoint, model downloads or GPU are required.
+
+Coverage includes HTTP request cancellation, upstream failures, cancellation before and
+after streamed text, restoring the Blazor controls, excluding stopped turns from future
+context, disposing the component and canceling console input. These tests run in CI.
+
+## Script and Compose checks
+
 Run from the repository root with PowerShell 7:
 
 ```powershell
