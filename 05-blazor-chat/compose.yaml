@@ -6,6 +6,9 @@
 services:
   web:
     build: .
+    environment:
+      CHAT_MAX_HISTORY_CHARS: ${CHAT_MAX_HISTORY_CHARS:-16000}
+      CHAT_MAX_HISTORY_TURNS: ${CHAT_MAX_HISTORY_TURNS:-10}
     ports:
       - "8080:8080"
     models:

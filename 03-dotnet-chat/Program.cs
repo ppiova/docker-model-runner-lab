@@ -29,7 +29,8 @@ ConsoleCancelEventHandler onCancel = (_, e) =>
 Console.CancelKeyPress += onCancel;
 try
 {
-    await DmrChat.ConsoleChat.RunAsync(chat, Console.In, Console.Out, model, baseUrl, shutdown.Token);
+    await DmrChat.ConsoleChat.RunAsync(chat, Console.In, Console.Out, model, baseUrl, shutdown.Token,
+        DmrChat.ConversationHistory.FromEnvironment(DmrChat.ConsoleChat.SystemPrompt));
 }
 finally
 {
