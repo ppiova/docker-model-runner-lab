@@ -7,6 +7,33 @@ namespace Chat.Tests;
 
 public class BlazorCancellationTests
 {
+    [Fact]
+    public async Task Model_failure_restores_prompt_and_excludes_failed_exchange_from_retry()
+    {
+        int calls = 0;
+        using var model = new TestModel(_ => Task.FromResult(++calls == 2
+            ? new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError)
+                { Content = new StringContent("{}") }
+            : TestModel.Completed()));
+        await using var context = CreateContext(model);
+        var component = context.Render<Home>();
+        await Send("Earlier prompt");
+        await Send("Failed prompt");
+        Assert.Contains("Could not reach", component.Markup);
+        Assert.False(component.Find("textarea").HasAttribute("disabled"));
+        Assert.Equal("Failed prompt", component.Find("textarea").GetAttribute("value"));
+        Assert.Equal("Send", component.Find("button.send").TextContent);
+        await Send("Retry prompt");
+        Assert.Equal(new[] { "Earlier prompt", "Complete answer", "Retry prompt" },
+            TestModel.Contents(model.Requests.Last()).Skip(1));
+
+        async Task Send(string text)
+        {
+            await component.Find("textarea").InputAsync(text);
+            await component.Find("button.send").ClickAsync(new MouseEventArgs()).WaitAsync(TestModel.Timeout);
+        }
+    }
+
     [Theory]
     [InlineData("")]
     [InlineData("Partial answer")]
