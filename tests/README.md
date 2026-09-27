@@ -20,6 +20,11 @@ both standalone lab implementations with the same cases: turn and character limi
 exact boundaries, oversized prompts/replies, failed/stopped requests and reset. Console
 and Blazor integration tests verify bounded SDK requests and input rejection. These tests run in CI.
 
+API regression cases also cover missing/null/blank prompts, empty or malformed JSON and
+invalid prompt types (HTTP 400 without a model call), successful Unicode/empty replies,
+and connection failures (HTTP 502 Problem Details). Blazor recovery after an upstream
+failure verifies that the prompt can be retried without including a failed exchange.
+
 ## Script and Compose checks
 
 Run from the repository root with PowerShell 7:
