@@ -109,3 +109,7 @@ exit 0
         Remove-Item -LiteralPath $resolvedRoot -Recurse -Force
     }
 }
+
+# GitHub Actions propagates LASTEXITCODE after invoking a script. The last
+# scenario intentionally fails, but reaching here means every assertion passed.
+exit 0
