@@ -86,3 +86,38 @@ Then open `http://localhost:8080`. Docker Model Runner must be enabled so the co
 ```bash
 docker compose down
 ```
+
+## History limits
+
+| Variable | Default | Meaning |
+| --- | --- | --- |
+| `CHAT_MAX_HISTORY_CHARS` | `16000` | Maximum text retained as model context and sent in one request, including the system message and current prompt |
+| `CHAT_MAX_HISTORY_TURNS` | `10` | Maximum completed user/assistant exchanges retained |
+
+The system message is always preserved. Old exchanges are dropped as complete pairs,
+keeping the most recent contiguous history that fits. Failed or stopped requests do not
+change retained exchanges. Prompts exceeding the available character budget are rejected
+before calling the model. If a completed prompt/reply pair is too large to retain, it is
+shown but not remembered; the application reports this and preserves prior context.
+
+Characters are counted as .NET UTF-16 code units, not model tokens. This is a predictable
+text-size bound, not a guarantee of fitting every model's context window: tokenization,
+message framing and space for generated output differ by model. Lower the limit for models
+with smaller contexts. The limit does not truncate an in-progress generated response.
+Unset or empty settings use defaults; invalid or nonpositive settings are rejected, and
+the character budget must exceed the system-message length.
+
+```bash
+CHAT_MAX_HISTORY_CHARS=8000 CHAT_MAX_HISTORY_TURNS=5 dotnet run
+```
+
+```powershell
+$env:CHAT_MAX_HISTORY_CHARS = "8000"
+$env:CHAT_MAX_HISTORY_TURNS = "5"
+dotnet run
+```
+
+Compose also forwards these settings from the host (or a local .env file). For a pre-built
+image, pass them with docker run -e. The visible transcript keeps only the latest
+CHAT_MAX_HISTORY_TURNS attempts, including stopped/failed turns; this is separate from
+the successfully completed exchanges retained for model context. Clear resets both.

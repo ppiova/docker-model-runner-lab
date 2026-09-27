@@ -28,6 +28,9 @@ ChatClient chatClient = new OpenAIClient(
     .GetChatClient(model);
 
 builder.Services.AddSingleton(chatClient);
+// A fresh history per component; never share conversation state between users.
+builder.Services.AddTransient(_ => BlazorChat.ConversationHistory.FromEnvironment(
+    "You are a helpful assistant running locally via Docker Model Runner. Keep answers concise."));
 
 // Expose the resolved configuration to components for display.
 builder.Services.AddSingleton(new ModelInfo(model, baseUrl));
