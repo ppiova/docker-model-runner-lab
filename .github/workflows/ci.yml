@@ -54,6 +54,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - name: Test PowerShell quickstart behavior
-        shell: ${{ matrix.shell }}
+      - name: Test PowerShell 7 quickstart behavior
+        if: matrix.shell == 'pwsh'
+        shell: pwsh
+        run: ./tests/quickstart.Tests.ps1
+      - name: Test Windows PowerShell 5.1 quickstart behavior
+        if: matrix.shell == 'powershell'
+        shell: powershell
         run: ./tests/quickstart.Tests.ps1
