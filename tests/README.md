@@ -15,7 +15,10 @@ network model endpoint, model downloads or GPU are required.
 
 Coverage includes HTTP request cancellation, upstream failures, cancellation before and
 after streamed text, restoring the Blazor controls, excluding stopped turns from future
-context, disposing the component and canceling console input. These tests run in CI.
+context, disposing the component and canceling console input. History tests exercise
+both standalone lab implementations with the same cases: turn and character limits,
+exact boundaries, oversized prompts/replies, failed/stopped requests and reset. Console
+and Blazor integration tests verify bounded SDK requests and input rejection. These tests run in CI.
 
 ## Script and Compose checks
 

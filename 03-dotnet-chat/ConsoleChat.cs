@@ -6,18 +6,17 @@ namespace DmrChat;
 
 public static class ConsoleChat
 {
+    public const string SystemPrompt = "You are a helpful assistant running locally via Docker Model Runner.";
     public static async Task RunAsync(ChatClient chat, TextReader input, TextWriter output,
-        string model, string baseUrl, CancellationToken cancellationToken = default)
+        string model, string baseUrl, CancellationToken cancellationToken = default,
+        ConversationHistory? history = null)
     {
         output.WriteLine($"Docker Model Runner chat. Model: {model}");
         output.WriteLine($"Endpoint: {baseUrl}");
         output.WriteLine("Type a message and press Enter. Type /exit to quit. Ctrl+C cancels and exits.");
         output.WriteLine();
 
-        var history = new List<ChatMessage>
-        {
-            new SystemChatMessage("You are a helpful assistant running locally via Docker Model Runner.")
-        };
+        history ??= new ConversationHistory(SystemPrompt);
 
         try
         {
@@ -32,15 +31,19 @@ public static class ConsoleChat
                 if (prompt is null || prompt.Trim() is "/exit" or "/quit") { break; }
                 if (string.IsNullOrWhiteSpace(prompt)) { continue; }
 
-                int turnStart = history.Count;
-                history.Add(new UserChatMessage(prompt));
+                IReadOnlyList<ChatMessage> messages;
+                try { messages = history.CreateRequest(prompt); }
+                catch (ArgumentException ex)
+                {
+                    output.WriteLine($"error> {ex.Message}");
+                    continue;
+                }
                 output.Write("ai>  ");
                 var reply = new StringBuilder();
-                bool completed = false;
 
                 try
                 {
-                    await foreach (var update in chat.CompleteChatStreamingAsync(history,
+                    await foreach (var update in chat.CompleteChatStreamingAsync(messages,
                         cancellationToken: cancellationToken))
                     {
                         cancellationToken.ThrowIfCancellationRequested();
@@ -51,9 +54,9 @@ public static class ConsoleChat
                         }
                     }
                     cancellationToken.ThrowIfCancellationRequested();
-                    history.Add(new AssistantChatMessage(reply.ToString()));
-                    completed = true;
                     output.WriteLine();
+                    if (!history.Remember(prompt, reply.ToString()))
+                        output.WriteLine("info> This exchange is too long to retain as context for future messages.");
                     output.WriteLine();
                 }
                 catch (Exception ex) when (ex is ClientResultException or HttpRequestException)
@@ -62,11 +65,6 @@ public static class ConsoleChat
                     output.WriteLine();
                     output.WriteLine($"error> Could not reach the model at {baseUrl}: {ex.Message}");
                     output.WriteLine("error> Is Docker Model Runner enabled? Check with: docker model status");
-                }
-                finally
-                {
-                    // Only complete exchanges are kept as context for the next prompt.
-                    if (!completed) { history.RemoveRange(turnStart, history.Count - turnStart); }
                 }
             }
         }
