@@ -161,6 +161,13 @@
     }
 }
 
+.history-notice {
+    margin: 0;
+    padding: 0.5rem 1.25rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
 .composer {
     display: flex;
     gap: 0.6rem;

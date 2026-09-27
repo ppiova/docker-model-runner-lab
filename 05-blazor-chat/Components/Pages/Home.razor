@@ -2,6 +2,7 @@
 @rendermode InteractiveServer
 @implements IDisposable
 @inject ChatClient Chat
+@inject BlazorChat.ConversationHistory History
 @inject ModelInfo Info
 @inject IJSRuntime JS
 @using System.ClientModel
@@ -47,6 +48,10 @@
         }
     </div>
 
+    @if (notice is not null)
+    {
+        <p role="status" class="history-notice">@notice</p>
+    }
     <footer class="composer">
         <textarea @bind="input" @bind:event="oninput" @onkeydown="OnKeyDown"
                   placeholder="Type a message and press Enter" rows="1" disabled="@busy"></textarea>
@@ -62,15 +67,10 @@
 </div>
 
 @code {
-    // History sent to the model, kept across turns so it has context.
-    private readonly List<ChatMessage> history = new()
-    {
-        new SystemChatMessage("You are a helpful assistant running locally via Docker Model Runner. Keep answers concise.")
-    };
-
     // What the UI renders.
     private readonly List<Bubble> bubbles = new();
     private string input = string.Empty;
+    private string? notice;
     private bool busy;
     private bool disposed;
     private readonly CancellationTokenSource lifetime = new();
@@ -99,23 +99,31 @@
             return;
         }
 
+        IReadOnlyList<ChatMessage> messages;
+        try { messages = History.CreateRequest(prompt); }
+        catch (ArgumentException ex)
+        {
+            notice = ex.Message;
+            return;
+        }
+
+        notice = null;
         busy = true;
         input = string.Empty;
         using var turn = CancellationTokenSource.CreateLinkedTokenSource(lifetime.Token);
         generation = turn;
-        int turnStart = history.Count;
-        bool completed = false;
 
         bubbles.Add(new Bubble { Role = "user", Text = prompt });
-        history.Add(new UserChatMessage(prompt));
 
         var answer = new Bubble { Role = "assistant", Text = string.Empty };
         bubbles.Add(answer);
+        // Bound the visible transcript too, including failed or canceled attempts.
+        while (bubbles.Count / 2 > History.MaxTurns) { bubbles.RemoveRange(0, 2); }
         try
         {
             await ScrollToBottom(turn.Token);
             turn.Token.ThrowIfCancellationRequested();
-            await foreach (StreamingChatCompletionUpdate update in Chat.CompleteChatStreamingAsync(history,
+            await foreach (StreamingChatCompletionUpdate update in Chat.CompleteChatStreamingAsync(messages,
                 cancellationToken: turn.Token))
             {
                 turn.Token.ThrowIfCancellationRequested();
@@ -127,8 +135,8 @@
             }
 
             turn.Token.ThrowIfCancellationRequested();
-            history.Add(new AssistantChatMessage(answer.Text));
-            completed = true;
+            if (!History.Remember(prompt, answer.Text))
+                notice = "This exchange is too long to retain as context for future messages.";
         }
         catch (OperationCanceledException) when (turn.IsCancellationRequested)
         {
@@ -144,7 +152,6 @@
         }
         finally
         {
-            if (!completed) { history.RemoveRange(turnStart, history.Count - turnStart); }
             generation = null;
             busy = false;
             if (!disposed)
@@ -168,7 +175,8 @@
     private void Reset()
     {
         bubbles.Clear();
-        history.RemoveRange(1, history.Count - 1); // keep the system message
+        History.Clear();
+        notice = null;
         input = string.Empty;
     }
 

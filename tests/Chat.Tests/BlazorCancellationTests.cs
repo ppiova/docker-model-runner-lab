@@ -67,6 +67,7 @@ public class BlazorCancellationTests
     {
         var context = new BunitContext();
         context.Services.AddSingleton(model.CreateClient());
+        context.Services.AddTransient(_ => new BlazorChat.ConversationHistory("You are a helpful assistant."));
         context.Services.AddSingleton(new ModelInfo("test-model", "https://model.test"));
         context.JSInterop.SetupVoid("scrollChatToBottom").SetVoidResult();
         return context;
