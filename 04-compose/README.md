@@ -33,6 +33,20 @@ docker compose up --build
 
 Compose pulls the model if needed, builds the app image and starts the service.
 
+To select a different model, set `MODEL` before starting Compose:
+
+```bash
+MODEL=ai/llama3.2 docker compose up --build
+```
+
+```powershell
+$env:MODEL = "ai/llama3.2"
+docker compose up --build
+```
+
+An unset or empty `MODEL` defaults to `ai/gemma3`. Compose provisions the selected model
+and injects its identifier into the app. Run `docker compose config` to inspect the selection.
+
 ## Try it
 
 ```bash
