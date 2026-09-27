@@ -15,6 +15,6 @@ services:
 
 models:
   gemma:
-    model: ai/gemma3
+    model: ${MODEL:-ai/gemma3}
     # Optional: tune the context window (in tokens).
     # context_size: 8192

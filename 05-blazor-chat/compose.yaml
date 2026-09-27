@@ -15,4 +15,4 @@ services:
 
 models:
   gemma:
-    model: ai/gemma3
+    model: ${MODEL:-ai/gemma3}

@@ -43,6 +43,20 @@ docker compose up --build
 Compose injects `OPENAI_BASE_URL` and `MODEL` into the container, so the app talks to the model
 at `http://model-runner.docker.internal` with no extra configuration.
 
+To select a different model, set `MODEL` before starting Compose:
+
+```bash
+MODEL=ai/llama3.2 docker compose up --build
+```
+
+```powershell
+$env:MODEL = "ai/llama3.2"
+docker compose up --build
+```
+
+An unset or empty `MODEL` defaults to `ai/gemma3`. Compose provisions the selected model
+and injects its identifier into the app. Run `docker compose config` to inspect the selection.
+
 ## Pre-built image
 
 [![ghcr.io](https://img.shields.io/badge/ghcr.io-blazor--chat-2496ED?logo=docker&logoColor=white)](https://github.com/ppiova/docker-model-runner-lab/pkgs/container/docker-model-runner-lab%2Fblazor-chat)
