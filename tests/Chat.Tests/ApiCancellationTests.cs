@@ -1,12 +1,5 @@
-extern alias ComposeApi;
-
 using System.Net;
 using System.Net.Http.Json;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using OpenAI.Chat;
 
 namespace Chat.Tests;
 
@@ -50,12 +43,4 @@ public class ApiCancellationTests
         Assert.Equal(HttpStatusCode.BadGateway, response.StatusCode);
     }
 
-    private sealed class ApiFactory(ChatClient chat) : WebApplicationFactory<ComposeApi::Program>
-    {
-        protected override void ConfigureWebHost(IWebHostBuilder builder) => builder.ConfigureServices(services =>
-        {
-            services.RemoveAll<ChatClient>();
-            services.AddSingleton(chat);
-        });
-    }
 }
