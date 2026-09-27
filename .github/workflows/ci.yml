@@ -43,6 +43,7 @@ jobs:
 
   quickstart-tests:
     strategy:
+      fail-fast: false
       matrix:
         include:
           - os: ubuntu-latest

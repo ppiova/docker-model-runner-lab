@@ -44,7 +44,7 @@ exit /b 0
 '@ | Set-Content -LiteralPath (Join-Path $testRoot 'docker.cmd') -Encoding Ascii
     } else {
         $fakeDocker = Join-Path $testRoot 'docker'
-        @'
+        $fakeScript = @'
 #!/bin/sh
 printf '%s\n' "$2" >> "$DMR_TEST_LOG"
 if [ "$2" = "$DMR_TEST_FAIL" ]; then
@@ -57,7 +57,10 @@ if [ "$2" = inspect ] && [ "$DMR_TEST_EXISTS" = 0 ]; then
 fi
 echo "simulated $2 progress" >&2
 exit 0
-'@ | Set-Content -LiteralPath $fakeDocker
+'@
+        # .gitattributes checks out .ps1 files with CRLF even on Linux. A native
+        # shell script needs LF, including its shebang, and no UTF-8 BOM.
+        [IO.File]::WriteAllText($fakeDocker, $fakeScript.Replace("`r`n", "`n") + "`n")
         & chmod +x $fakeDocker
         if ($LASTEXITCODE -ne 0) { throw 'Could not make the fake Docker executable.' }
     }
